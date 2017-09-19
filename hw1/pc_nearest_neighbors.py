@@ -33,7 +33,7 @@ plt.show()
 
 # part (ii)
 
-plot_image_grid(trainV[:10,:], '10 first singular vectors')
+plot_image_grid(trainV[:10,:], 'Ten-First-Singular-Vectors')
 
 # part (iii)
 
