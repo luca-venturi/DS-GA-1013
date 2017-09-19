@@ -2,6 +2,8 @@
 Tools for loading the MNIST Data.
 
 @author: Brett
+
+modified by: Luca Venturi
 """
 
 import numpy as np
@@ -16,26 +18,27 @@ training images with shape (n,d)
 projecting it onto the row space of trainImages.
 """
 def denoise(trainImages, noisyImage) :
-    #Your code here
-    return None
+	  
+	projectionMatrix = np.dot(trainImages.transpose(),np.linalg.pinv(trainImages.transpose()))
+	denoisedImage = np.dot(projectionMatrix,noisyImage)
+	
+	return denoisedImage
 
 """
 Assumes the data file is in 'mnist_all.mat'.
 """
 def main() :
-    datafile = "mnist_all.mat" #Change if you put the file in a different path
-    train = load_train_data(datafile)
-    test,noisyTest,testLabels = load_noisy_test_data(datafile)
-    imgs = []
-    for i in range(len(testLabels)) :
-        trueDigit = testLabels[i]
-        testImage = test[i,:]
-        noisyImage = noisyTest[i,:]
-        denoisedImage = denoise(train[trueDigit],noisyImage)
-        imgs.extend([testImage,noisyImage,denoisedImage])
-    plot_image_grid(imgs,
-                    "Image-Noisy-Denoised",
-                    (28,28),len(testLabels),3,True,row_titles=['True','Noisy','Denoised'])
+	datafile = "mnist_all.mat" #Change if you put the file in a different path
+	train = load_train_data(datafile)
+	test,noisyTest,testLabels = load_noisy_test_data(datafile)
+	imgs = []
+	for i in range(len(testLabels)) :
+		trueDigit = testLabels[i]
+		testImage = test[i,:]
+		noisyImage = noisyTest[i,:]
+		denoisedImage = denoise(train[trueDigit],noisyImage)
+		imgs.extend([testImage,noisyImage,denoisedImage])
+	plot_image_grid(imgs,"Image-Noisy-Denoised",(28,28),len(testLabels),3,True,row_titles=['True','Noisy','Denoised'])
 
 if __name__ == "__main__" :
-    main()
+	main()
