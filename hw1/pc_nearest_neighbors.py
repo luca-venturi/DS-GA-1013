@@ -62,5 +62,5 @@ for i in range(testSize) :
 
 row_titles = ['Test','Nearest']
 col_titles = ['%d vs. %d'%(i,j) for i,j in zip(testLabels,estLabels)]
-plot_image_grid(imgs,"Image-NearestNeighbor",(28,28),testSize,2,True,row_titles=row_titles,col_titles=col_titles)
+plot_image_grid(imgs,"Image-pcNearestNeighbor",(28,28),testSize,2,True,row_titles=row_titles,col_titles=col_titles)
 
