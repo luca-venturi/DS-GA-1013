@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 import numpy as np
 import scipy as sp
+import scipy.linalg as la
 import matplotlib.pyplot as plt
 from movie_tools import *
 import time
@@ -30,17 +31,17 @@ VT - 2d numpy array with shape (k,c) of the first k right singular vectors (as r
 def random_svd(data,k,p,use_sub=False,q=0) :
 	(r,c) = data.shape
 	c_red = k + p
-	if use_sub=False:
+	if use_sub == False:
 		random_matrix = np.random.normal(size=(c,c_red))
 	else:
 		random_index = np.random.choice(range(c),size=c_red)
 		random_matrix = np.zeros((c,c_red))
 		for k in range(c_red):
 			random_matrix[random_index[k],k] = 1.
-	U_tilde = sp.linalg.orth(np.dot(data,random_matrix)) # w.o. orthonormalizing columns: np.dot(data,random_matrix)
+	U_tilde = la.orth(np.dot(data,random_matrix)) # w.o. orthonormalizing columns: np.dot(data,random_matrix)
 	for _ in range(q):
-		U_tilde = sp.linalg.orth(np.dot(np.transpose(data),U_tilde)) # w.o. orthonormalizing columns: np.dot(np.transpose(data),U_tilde)
-		U_tilde = sp.linalg.orth(np.dot(data,U_tilde)) # w.o. orthonormalizing columns: np.dot(data,U_tilde)
+		U_tilde = la.orth(np.dot(np.transpose(data),U_tilde)) # w.o. orthonormalizing columns: np.dot(np.transpose(data),U_tilde)
+		U_tilde = la.orth(np.dot(data,U_tilde)) # w.o. orthonormalizing columns: np.dot(data,U_tilde)
 	W = np.dot(np.transpose(U_tilde),data)
 	U_w, s_w, VT_w = np.linalg.svd(W) 
 			
