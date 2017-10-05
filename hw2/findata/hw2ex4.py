@@ -9,7 +9,8 @@ returns = days[1:] - days[:-1]
 # (a)
 
 returnsCentered = returns - np.mean(returns, axis=0)
-U, S, returnsPrincipalDirections = np.linalg.svd(returnsCentered)
+#U, S, returnsPrincipalDirections = np.linalg.svd(returnsCentered)
+U, S, returnsPrincipalDirections = np.linalg.svd(np.cov(returnsCentered,rowvar=False)) # method more aligned with (b)
 maxCoeffStocks_index = [np.argmax(np.abs(returnsPrincipalDirections[k])) for k in range(2)]
 maxCoeffStocks = [names[k] for k in maxCoeffStocks_index]
 
@@ -24,15 +25,19 @@ for k in range(2):
 
 # (c)
 
-alpha = np.array([100 for _ in range(nStocks)])
-print alpha
-200_shares_l = ['appl','amzn','msft','goog']
+shares = np.array([100 for _ in range(nStocks)])
+print shares
+double_shares_stocks = ['aapl','amzn','msft','goog']
 for k in range(nStocks):
-	if names[k] in 200_shares_list:
-		alpha[k] += 100
-print alpha
-returnsCovariance = np.cov(returnsCentered,rowvar=False)
-portfolioReturnCovariance = np.dot(alpha,np.dot(returnsCovariance,alpha))
-print portfolioReturnCovariance
+	if names[k] in double_shares_stocks:
+		shares[k] += 100
 
+portfolioReturns = np.dot(returns,shares)
+portfolioReturnsCovariance = np.std(portfolioReturns)
+print portfolioReturnsCovariance
+
+# (d)
+
+prob = sum([portfolioReturns[k] <= -1000 for k in range(nReturns)]) / 1000.
+print prob
 
