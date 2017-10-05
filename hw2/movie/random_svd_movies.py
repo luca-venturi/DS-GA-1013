@@ -4,7 +4,6 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 from movie_tools import *
-import random_svd as rs
 import time
 """
 Used while plotting to choose the best sign of the singular vector for displaying.
@@ -29,8 +28,17 @@ s - 1d numpy array with first k singular values
 VT - 2d numpy array with shape (k,c) of the first k right singular vectors (as rows).  
 """
 def random_svd(data,k,p,use_sub=False,q=0) :
-    #your code here
-    return None
+	(r,c) = data.shape
+	c_red = k + p
+	random_matrix = np.random.normal(size=(c,c_red))
+	U_tilde = np.dot(data,random_matrix) # orthonormalize columns - 1
+	for _ in range(q):
+		U_tilde = np.dot(np.transpose(data),U_tilde) # 1
+		U_tilde = np.dot(data,U_tilde) # 1
+	W = np.dot(np.transpose(U_tilde),data)
+	U_w, s_w, VT_w = np.linalg.svd(W) 
+			
+	return np.dot(U_tilde,U_w)[:,:k], s_w[:k], VT_w[:,:k]
 
 def main() :
     filename = "JohnOliverClip1Gray.mkv" #Location of movie file

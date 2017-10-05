@@ -3,6 +3,8 @@ from __future__ import division
 Randomized Nearest Neighbors
 
 @author: Brett
+
+modified by: Luca Venturi 
 """
 
 import numpy as np
@@ -26,8 +28,20 @@ each test image.  The distances are computed in l2 (Euclidean) between
 the randomly projected images.
 """
 def random_nearest_neighbors(train, test, d) :
-    #your code here
-    return None
+	(d,c) = train.shape
+	(t,c) = test.shape
+	randomColumns = np.random.normal(size=(d,c)) 
+	U, S, randomProjection = np.linalg.svd(randomColumns,full_matrices=False)
+	projectedTrain = np.dot(train,np.transpose(randomProjection))   
+	projectedTest = np.dot(test,np.transpose(randomProjection))
+	
+	testDistances = np.zeros((t,d))
+	for i in range(t):
+		for j in range(d):
+			testDistances[i,j] = np.linalg.norm(projectedTrain[j]-projectedTest[i])
+	index_nearest_neighbors = np.argmin(testDistances, axis=1)	
+	
+	return index_nearest_neighbors
 
 """
 Handles the nearest neighbor output for dimension d
