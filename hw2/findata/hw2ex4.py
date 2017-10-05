@@ -24,4 +24,15 @@ for k in range(2):
 
 # (c)
 
+alpha = np.array([100 for _ in range(nStocks)])
+print alpha
+200_shares_l = ['appl','amzn','msft','goog']
+for k in range(nStocks):
+	if names[k] in 200_shares_list:
+		alpha[k] += 100
+print alpha
+returnsCovariance = np.cov(returnsCentered,rowvar=False)
+portfolioReturnCovariance = np.dot(alpha,np.dot(returnsCovariance,alpha))
+print portfolioReturnCovariance
+
 
