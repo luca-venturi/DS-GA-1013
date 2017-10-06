@@ -1,0 +1,6 @@
+Initial Data Shape (136, 1080, 1920)
+Time for random SVD with q=0: 4.725875s
+Time for random SVD with subsampling and q=0: 5.119447s
+Time for random SVD with q=2: 13.455444s
+Time for random SVD with subsampling and q=2: 13.168883s
+Time for true SVD: 78.293750s
