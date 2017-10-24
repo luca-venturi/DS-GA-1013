@@ -1,8 +1,9 @@
 from __future__ import print_function
 import sys
 import numpy as np
-import scipy as sp
 import scipy.linalg as la
+#import matplotlib as mpl # to use with ssh
+#mpl.use('Agg') # to use with ssh
 import matplotlib.pyplot as plt
 from movie_tools import *
 import time
