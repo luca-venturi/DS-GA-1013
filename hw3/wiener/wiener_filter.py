@@ -14,7 +14,7 @@ Returns a 2d numpy array of shape (R,C) containing the circular convolution.  Th
 returned value must be real (so return the real part if you do a complex calculation).
 """
 def convolve(img, fil) :
-    return None
+    return np.real( np.fft.ifft2( np.fft.fft2(img) * np.fft.fft2(fil) ) )
 
 """
 Given a convolved image and a filter, returns the 2d circular deconvolution.
@@ -25,7 +25,8 @@ Returns a 2d numpy array of shape (R,C) containing the 2d circular deconvolution
 returned value must be real (so return the real part if you do a complex calculation).
 """
 def deconvolve(img, fil) :
-    return None
+	eps = 1e-12
+	return np.real( np.fft.ifft2( np.fft.fft2(img) / (np.fft.fft2(fil) + eps) ) )
     
 """
 Given a convolved image, a filter, a list of images, and the variance
@@ -39,7 +40,16 @@ Returns a 2d numpy array of shape (R,C) containing the wiener deconvolution.  Th
 returned value must be real (so return the real part if you do a complex calculation).
 """
 def wiener_deconvolve(img, fil, imgs, v) :
-    return None
+	n, r, c = imgs.shape
+	var_dft_noise = r * c * v
+	dft_imgs = np.array([np.fft.fft2(imgs[i,:,:]) for i in range(n)])
+	mean_dft_imgs = np.mean(dft_imgs, axis=0)
+	var_dft_imgs = np.var(dft_imgs, axis=0)
+	dft_img = np.fft.fft2(img)
+	dft_fil = np.fft.fft2(fil)
+	dft_img -= dft_fil * mean_dft_imgs
+	tmp = np.conj(dft_fil) * var_dft_imgs / (np.abs(dft_fil)**2 * var_dft_imgs + var_dft_noise)
+	return np.real( np.fft.ifft2( mean_dft_imgs + tmp * dft_img ) )
 
 def main() :
     data = scipy.io.loadmat('olivettifaces.mat')['faces'].T.astype('float64')
@@ -50,7 +60,7 @@ def main() :
         image = data[10*i+6,:].astype('float64')
         image = image.reshape(64,64).T
         fil = np.outer(signal.gaussian(64,1),signal.gaussian(64,1))
-        sfil = np.fft.ifftshift(fil)
+        sfil = np.fft.ifftshift(fil) # some filter
         conimg = convolve(image,sfil)
         deconimg = deconvolve(conimg,sfil)
         ran = np.amax(conimg)-np.amin(conimg)
@@ -66,7 +76,7 @@ def main() :
     coltitles2 = ['NoisyConvolve','NoisyDeconvolve','WienerDeconvolve']
     plot_image_grid(imgs,'Noisefree',(64,64),len(coltitles),4,col_titles=coltitles)
     plot_image_grid(imgs2,'Noisy',(64,64),len(coltitles2),4,col_titles=coltitles2)
-    #plot_fft_image_grid(imgs,'NoisefreeFFT',(64,64),len(coltitles),4,col_titles=coltitles)
+    plot_fft_image_grid(imgs,'NoisefreeFFT',(64,64),len(coltitles),4,col_titles=coltitles)
 
 if __name__ == "__main__" :
     main()
