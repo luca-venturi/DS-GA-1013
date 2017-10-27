@@ -16,7 +16,7 @@ for n in range(len(dim)):
 
 	for i in range(dim[n]):
 		plt.plot([fr[i],fr[i]],[0.,np.abs(ff[i])],'b')
-	# save figure to file
+	plt.savefig('fft_'+dim_str[n]+'.pdf')
 	plt.show()
 
 # Ex. b
