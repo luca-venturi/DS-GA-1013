@@ -15,8 +15,29 @@ f(t) = y0 + (t-x0)*alpha if t < 0 and
 f(t) = y0 + (t-x0)*beta if t >= 0
 """
 def fit_ls(xs,ys,x0) :
-    return None #Your code here
-    
+	n = 3
+	N = ys.size
+	def f0(t):
+		return 1.
+	def f1(t):
+		if t < x0:
+			return t -x0
+		else:
+			return 0.
+	def f2(t):
+		if t >= x0:
+			return t -x0
+		else:
+			return 0.
+	v = np.zeros((n))
+	for i in range(n):
+		v[i] = np.sum([ys[j] * eval('f'+str(i))(xs[j]) for j in range(N)])
+	M = np.zeros((n,n))
+	for i in range(n):
+		for j in range(n):
+			M[i,j] = np.sum([eval('f'+str(i))(xs[k]) * eval('f'+str(j))(xs[k]) for k in range(N)])
+	return tuple(np.linalg.solve(M,v))
+
 def main() :
     np.random.seed(100)
     K = 20
