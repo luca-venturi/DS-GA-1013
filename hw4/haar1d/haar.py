@@ -131,7 +131,7 @@ def plot_wavelet(x,m,n) :
         ax = axes[k-1,0]
         wax = axes[k-1,1]
         w = wavelet_coeffs(x.copy(),k,n)
-        #ax.stem(w) # does not work
+        ax.stem(w) # does not work
         ax.margins(.1,.1)
         ax.set_ylabel('k=%d'%k)
         wax.plot(projectWavelet(w,k,n))
