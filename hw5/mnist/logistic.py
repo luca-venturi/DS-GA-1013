@@ -2,6 +2,7 @@ from mnist_tools import *
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from scipy.misc import logsumexp
 
 """
 Sigmoid function that takes a numpy array of any shape.
@@ -26,7 +27,15 @@ Returns:
 A single float, the loss evaluated on the given arguments.
 """
 def L(w,X,y) :
-    return None #Your code here
+	n = y.shape[0]
+	wx = np.dot(X,w)
+	if n == 1:
+		_log = logsumexp([0.,-wx])
+	else:
+		_log = np.array([np.zeros((n)),-wx])
+		_log = logsumexp(_log, axis=0)
+	Lvec = _log + (1. - y) * wx
+	return np.mean(Lvec)
     
 """
 Tests the L function
@@ -55,7 +64,9 @@ A numpy vector of length m containing the gradient of the
 loss evaluated on the given arguments.
 """
 def dL(w,X,y) :
-    return None #Your code here
+	wx = np.dot(X,w)
+	_dL = X.T * (f(wx) - y)
+	return np.mean(_dL.T, axis=0)
     
 """
 Tests the dL function
@@ -93,7 +104,22 @@ ws: a python list of num_steps numpy arrays of length m containing the w-values 
 at each iteration
 """
 def gradient_descent(w0,X,y,num_steps=200,alpha=0.01,beta=0.5) :
-    return None #Your code here
+	w = w0
+	ws = [w]
+	eta = 0.1
+	for n in range(num_steps):
+		w0 = w
+		lhs = 1.
+		rhs = 0.
+		i = 0
+		while lhs > rhs:
+			eta = alpha * (beta ** i) 
+			w = w0 - eta * dL(w0,X,y)
+			lhs = L(w,X,y)
+			rhs = L(w0,X,y) - 0.5 * eta * np.sum(np.square(dL(w0,X,y))) 
+			i += 1
+		ws.append(w)
+	return w, ws
     
 """
 Runs stochastic gradient descent to minimize L.
@@ -113,8 +139,15 @@ w: numpy array of length m containing the final value of w
 ws: a python list of num_steps numpy arrays of length m containing the w-values computed
 at each iteration
 """
-def sgd(w0,x,y,s=0.5,num_steps=5000) :
-    return None #Your code here
+def sgd(w0,X,y,s=0.5,num_steps=5000) :
+    n = X.shape[0]
+    w = w0
+    ws = [w]
+    for t in range(num_steps):
+    	b = t % n
+    	w = w - s * dL(w,X[b,:],y[b])
+    	ws.append(w)
+    return w, ws
     
 """
 Standarizes the training and test data using the training data to compute
